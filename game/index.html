@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember &amp; Tide — an elemental card duel</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- Element icons: one inline SVG symbol per element. A card shows its
+     element by colour AND by this shape, never by text alone. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="icon-flame" viewBox="0 0 24 24">
+      <path fill="#ff7a3c" d="M12 2c1 3-2 4.5-2 7 0 1.2.8 2 2 2s2-.8 2-2c2 1.5 3 3.5 3 6a5 5 0 0 1-10 0c0-4 3-7 5-13z"/>
+      <path fill="#ffd23e" d="M12 10c.6 1.6-1.2 2.4-1.2 4a2.4 2.4 0 0 0 4.8 0c0-1-.5-2-1.4-2.6.3 1-.4 1.8-1.1 1.8-.8 0-1.4-.9-1.1-3.2z"/>
+    </symbol>
+    <symbol id="icon-drop" viewBox="0 0 24 24">
+      <path fill="#5aa9f0" d="M12 2.5c3.5 4.5 6 7.8 6 11a6 6 0 0 1-12 0c0-3.2 2.5-6.5 6-11z"/>
+      <path fill="#bfe0ff" d="M9 13.5a3.2 3.2 0 0 0 2.5 3.1c-.3-1.2.2-2.4 1.1-3.1.9-.8 1-2 .3-3-.9.9-2.6 1.7-3.9 3z"/>
+    </symbol>
+    <symbol id="icon-mount" viewBox="0 0 24 24">
+      <path fill="#7fb069" d="M2 20 9 6l3.5 6L15 8l7 12H2z"/>
+      <path fill="#f5efe0" d="M9 6l2 3.6-1.4 1L9 8.4 7.4 10 6 8.6 9 6z"/>
+      <path fill="#e8e0c8" d="M15 8l1.8 3.2-1.3 1L15 10.4 13.8 11.6 12.6 10 15 8z"/>
+    </symbol>
+    <symbol id="icon-swirl" viewBox="0 0 24 24">
+      <path fill="none" stroke="#f2cd4e" stroke-width="2.4" stroke-linecap="round" d="M3 8h11a3 3 0 1 0-3-3"/>
+      <path fill="none" stroke="#f2cd4e" stroke-width="2.4" stroke-linecap="round" d="M21 12H8a3 3 0 1 1 3-3"/>
+      <path fill="none" stroke="#fff3b0" stroke-width="2.4" stroke-linecap="round" d="M3 16h13a3 3 0 1 1-3 3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="stage">
+  <!-- Opponent row -->
+  <div class="row" id="opp-row">
+    <div class="portrait" id="opp-portrait">&#127754;</div>
+    <div class="side-info">
+      <div class="side-name">The Tidecaller</div>
+      <div class="side-sub">AI opponent &middot; elemental duelist</div>
+      <div class="side-stats">
+        <span class="pill"><span class="heart">&hearts;</span> Life <span class="num" id="opp-life">20</span></span>
+        <span class="pill"><span class="crystal">&#9670;</span> Energy <span class="num" id="opp-energy">0</span></span>
+        <span class="pill">Deck <span class="num" id="opp-deck">28</span></span>
+      </div>
+    </div>
+    <div class="hand-mini" id="opp-hand"></div>
+  </div>
+
+  <!-- Board -->
+  <div id="board">
+    <div class="board-side" id="opp-board">
+      <div class="board-label">Tidecaller</div>
+    </div>
+    <div class="board-side" id="you-board">
+      <div class="board-label">You</div>
+    </div>
+  </div>
+
+  <!-- Middle bar: message + End Turn -->
+  <div id="midbar">
+    <div id="turn-badge">Turn 1</div>
+    <div id="message">Welcome to Ember &amp; Tide.</div>
+    <button id="end-turn" type="button">End Turn &nbsp;(E)</button>
+  </div>
+
+  <!-- Player hand -->
+  <div id="hand"></div>
+
+  <!-- Player row -->
+  <div class="row" id="you-row">
+    <div class="portrait" id="you-portrait">&#128293;</div>
+    <div class="side-info">
+      <div class="side-name">You</div>
+      <div class="side-sub">Ember duelist &middot; click a card, then End Turn</div>
+      <div class="side-stats">
+        <span class="pill"><span class="heart">&hearts;</span> Life <span class="num" id="you-life">20</span></span>
+        <span class="pill"><span class="crystal">&#9670;</span> Energy <span class="num" id="you-energy">1</span></span>
+        <span class="pill">Deck <span class="num" id="you-deck">28</span></span>
+      </div>
+    </div>
+    <div class="hand-mini" id="you-hand-count"></div>
+  </div>
+
+  <!-- Title screen -->
+  <div class="overlay" id="title-screen">
+    <div class="game-logo">EMBER &amp; TIDE</div>
+    <div class="game-tag">An elemental card duel &mdash; outwit the Tidecaller</div>
+    <div class="legend">
+      <span class="el-chip"><span class="el-icon"><svg><use href="#icon-flame"/></svg></span>Fire</span>
+      <span class="el-chip"><span class="el-icon"><svg><use href="#icon-drop"/></svg></span>Water</span>
+      <span class="el-chip"><span class="el-icon"><svg><use href="#icon-mount"/></svg></span>Earth</span>
+      <span class="el-chip"><span class="el-icon"><svg><use href="#icon-swirl"/></svg></span>Air</span>
+    </div>
+    <div class="legend"><span class="beats">Fire beats Air &middot; Air beats Earth &middot; Earth beats Water &middot; Water beats Fire &mdash; advantage deals +2 damage</span></div>
+    <div class="howto">
+      <b>How to play:</b> each turn you gain energy and draw a card. Click a card in
+      your hand to play it onto your side of the table (up to 3 cards). When you
+      press <b>End Turn</b>, your cards attack &mdash; left to right, into the card
+      across from them, or straight at the Tidecaller. Reduce the Tidecaller to
+      <b>0 life</b> to win. Keyboard: <b>E</b> ends the turn, <b>Space</b> plays the
+      selected card, <b>1&ndash;7</b> select a card.
+    </div>
+    <button class="big-btn" id="play-btn" type="button">Click to Play</button>
+    <div class="foot-note">A complete original game &middot; plays offline in your browser &middot; no network</div>
+  </div>
+
+  <!-- Win screen -->
+  <div class="overlay hidden" id="win-screen">
+    <div class="end-title">VICTORY</div>
+    <div class="end-sub">The Tidecaller is defeated &mdash; the table is yours!</div>
+    <div class="end-stats" id="win-stats"></div>
+    <button class="big-btn" id="win-again-btn" type="button">Play Again</button>
+  </div>
+
+  <!-- Loss screen -->
+  <div class="overlay hidden" id="loss-screen">
+    <div class="end-title">DEFEAT</div>
+    <div class="end-sub">The Tidecaller prevails &mdash; the tide takes the table.</div>
+    <div class="end-stats" id="loss-stats"></div>
+    <button class="big-btn" id="loss-again-btn" type="button">Try Again</button>
+  </div>
+</div>
+
+<script src="cards.js"></script>
+<script src="ai.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

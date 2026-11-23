@@ -1,0 +1,369 @@
+/* Ember & Tide — all styling. System fonts only, no network, no images:
+   the table, the cards and every icon are CSS and inline SVG. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #0c0f0d;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #f5efe0;
+  -webkit-user-select: none; user-select: none;
+}
+
+/* The 1280x720 stage. game.js scales it to fit the window. */
+#stage {
+  position: absolute; left: 50%; top: 50%;
+  width: 1280px; height: 720px;
+  transform-origin: center center;
+  background: radial-gradient(ellipse at 50% 38%, #357a3c 0%, #256130 45%, #17431f 78%, #0f2c15 100%);
+  border: 10px solid #4a2f16;
+  outline: 3px solid #c9a227;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.8), inset 0 0 120px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- shared bits ---------- */
+
+.hidden { display: none !important; }
+
+button {
+  font-family: inherit; cursor: pointer;
+  border: none; border-radius: 10px;
+  font-weight: 800; letter-spacing: 0.04em;
+}
+
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid rgba(232, 195, 58, 0.55);
+  border-radius: 999px; padding: 4px 12px;
+  font-size: 17px; font-weight: 800; color: #ffe9a8;
+  white-space: nowrap;
+}
+.pill .num { font-size: 22px; color: #fff; }
+
+.heart { color: #ff5a5a; font-size: 20px; }
+.crystal { color: #6ec1ff; font-size: 19px; }
+
+/* Element icons (inline SVG symbols in index.html). */
+.el-icon { width: 26px; height: 26px; flex: none; }
+.el-icon svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- opponent + player rows ---------- */
+
+.row {
+  position: absolute; left: 0; right: 0;
+  display: flex; align-items: center;
+  padding: 0 18px;
+}
+#opp-row { top: 0; height: 88px; }
+#you-row { bottom: 0; height: 80px; }
+
+.portrait {
+  width: 62px; height: 62px; border-radius: 50%; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 34px; line-height: 1;
+  border: 3px solid #c9a227;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+}
+#opp-row .portrait { background: radial-gradient(circle at 35% 30%, #3f8fd2, #123f7d); }
+#you-row .portrait { background: radial-gradient(circle at 35% 30%, #e8713a, #8f1d0e); }
+
+.side-info { margin-left: 12px; min-width: 218px; }
+.side-name {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 19px; font-weight: 700; letter-spacing: 0.03em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+.side-sub { font-size: 12px; color: #cfe3c8; opacity: 0.9; margin-top: 1px; }
+.side-stats { display: flex; gap: 8px; margin-top: 4px; }
+
+.hand-mini { display: flex; margin-left: auto; align-items: center; }
+.hand-mini .mini-back {
+  width: 44px; height: 62px; margin-left: -18px;
+  border-radius: 6px; border: 2px solid #d8c690;
+  background: repeating-linear-gradient(45deg, #274b63 0 6px, #1d3a4e 6px 12px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+.hand-mini .mini-back:first-child { margin-left: 0; }
+.hand-mini .count {
+  margin-left: 10px; font-size: 15px; font-weight: 700; color: #ffe9a8;
+  background: rgba(0, 0, 0, 0.45); border-radius: 8px; padding: 3px 8px;
+}
+
+/* ---------- board ---------- */
+
+#board {
+  position: absolute; left: 0; right: 0; top: 88px; height: 364px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 0;
+}
+.board-side {
+  height: 160px; display: flex; align-items: center; justify-content: center;
+  gap: 18px; position: relative;
+}
+.board-label {
+  position: absolute; left: 22px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; font-weight: 800; letter-spacing: 0.14em;
+  color: rgba(255, 233, 168, 0.75); text-transform: uppercase;
+  writing-mode: vertical-rl; transform: translateY(-50%) rotate(180deg);
+}
+.slot {
+  width: 116px; height: 160px; border-radius: 12px;
+  border: 2px dashed rgba(255, 233, 168, 0.35);
+  background: rgba(0, 0, 0, 0.14);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: rgba(255, 233, 168, 0.45); font-weight: 700;
+}
+.slot.filled { border-style: solid; border-color: transparent; background: transparent; }
+
+/* ---------- middle bar ---------- */
+
+#midbar {
+  position: absolute; left: 0; right: 0; top: 270px; transform: translateY(-50%);
+  height: 44px; display: flex; align-items: center; gap: 14px;
+  padding: 0 18px; z-index: 5;
+}
+#message {
+  flex: 1; min-height: 38px; display: flex; align-items: center;
+  background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(232, 195, 58, 0.4);
+  border-radius: 10px; padding: 5px 14px;
+  font-size: 15px; font-weight: 600; color: #ffe9a8;
+}
+#end-turn {
+  flex: none; height: 40px; padding: 0 22px;
+  background: linear-gradient(#f2cd4e, #c9a227);
+  color: #241a05; font-size: 17px;
+  box-shadow: 0 4px 0 #7a5f08, 0 6px 14px rgba(0, 0, 0, 0.5);
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+#end-turn:hover { filter: brightness(1.08); }
+#end-turn:active { transform: translateY(3px); box-shadow: 0 1px 0 #7a5f08; }
+#end-turn:disabled {
+  filter: grayscale(0.7) brightness(0.7); cursor: default;
+  transform: none; box-shadow: 0 4px 0 #555;
+}
+#turn-badge {
+  flex: none; font-size: 15px; font-weight: 800; color: #fff;
+  background: rgba(0, 0, 0, 0.5); border-radius: 8px; padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* ---------- cards ---------- */
+
+/* Board cards are compact: header, art, name and stats only — the effect
+   text already fired when the card was played, and the hand cards show it. */
+.card {
+  position: relative; flex: none;
+  width: 116px; height: 160px; border-radius: 12px;
+  background: linear-gradient(#fdf6e3, #efe3c2);
+  color: #241a05;
+  border: 3px solid #2b2118;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+  cursor: default;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  overflow: hidden;
+}
+.board-side .card .effect { display: none; }
+.card .card-top {
+  height: 30px; display: flex; align-items: center; gap: 6px;
+  padding: 0 8px; color: #fff;
+}
+.card .card-top .el-icon { width: 20px; height: 20px; }
+.card .cost {
+  width: 24px; height: 24px; border-radius: 50%; flex: none;
+  background: #2b7de0; color: #fff; border: 2px solid #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+.card .el-name { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.card .art {
+  height: 58px; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.75), rgba(0, 0, 0, 0.08));
+  border-top: 2px solid rgba(0, 0, 0, 0.18);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.18);
+}
+.card .art svg { width: 44px; height: 44px; filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35)); }
+.card .name {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px; font-weight: 700; text-align: center;
+  padding: 4px 6px 0; line-height: 1.1; min-height: 28px;
+}
+.card .effect {
+  font-size: 11.5px; line-height: 1.25; text-align: center;
+  color: #5a4a2e; padding: 1px 8px; min-height: 28px; font-style: italic;
+}
+.card .stats {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 30px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 9px;
+}
+.card .atk, .card .hp {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 19px; font-weight: 900;
+}
+.card .atk { color: #b3261e; }
+.card .hp { color: #1e6b2e; }
+.card .atk .lbl, .card .hp .lbl { font-size: 10px; font-weight: 800; letter-spacing: 0.06em; }
+
+/* element tints on the card header */
+.card.el-fire  .card-top { background: linear-gradient(#e8452c, #a52a15); }
+.card.el-water .card-top { background: linear-gradient(#2b7de0, #174a8f); }
+.card.el-earth .card-top { background: linear-gradient(#5da24a, #33591f); }
+.card.el-air   .card-top { background: linear-gradient(#e8c33a, #a8840f); }
+
+/* hand cards sit in their own strip between the board and the player row */
+#hand {
+  position: absolute; left: 0; right: 0; top: 452px; height: 188px;
+  display: flex; align-items: flex-start; justify-content: center;
+  gap: 10px; padding-top: 4px; z-index: 6; pointer-events: none;
+}
+#hand .card {
+  width: 136px; height: 182px; pointer-events: auto; cursor: pointer;
+  transform: translateY(0) rotate(0deg);
+}
+#hand .card:nth-child(odd) { transform: rotate(-1.2deg); }
+#hand .card:nth-child(even) { transform: rotate(1.2deg); }
+#hand .card:hover {
+  transform: translateY(-14px) scale(1.04) rotate(0deg);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.65); z-index: 3;
+}
+#hand .card .art { height: 60px; }
+#hand .card .art svg { width: 50px; height: 50px; }
+#hand .card .name { font-size: 15px; }
+#hand .card .effect { font-size: 11.5px; min-height: 28px; }
+#hand .card.playable { box-shadow: 0 0 0 3px #ffe066, 0 8px 18px rgba(0, 0, 0, 0.55); }
+#hand .card.selected {
+  transform: translateY(-22px) scale(1.06) rotate(0deg);
+  box-shadow: 0 0 0 4px #fff, 0 0 22px #ffe066, 0 14px 26px rgba(0, 0, 0, 0.65);
+  z-index: 4;
+}
+#hand .card.cant-afford { filter: saturate(0.45) brightness(0.82); }
+#hand .card.cant-afford:hover { transform: translateY(-8px); }
+
+.card.just-played { animation: playIn 0.45s ease; }
+@keyframes playIn {
+  0% { transform: translateY(60px) scale(0.7) rotate(-6deg); opacity: 0.2; }
+  60% { transform: translateY(-8px) scale(1.06) rotate(1deg); opacity: 1; }
+  100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+}
+.card.lunge { animation: lunge 0.5s ease; }
+@keyframes lunge {
+  0% { transform: translateX(0); }
+  35% { transform: translateX(0) scale(1.08); }
+  55% { transform: translateY(-26px) scale(1.1); }
+  100% { transform: translateY(0) scale(1); }
+}
+.card.lunge-down { animation: lungeDown 0.5s ease; }
+@keyframes lungeDown {
+  0% { transform: translateX(0); }
+  35% { transform: translateX(0) scale(1.08); }
+  55% { transform: translateY(26px) scale(1.1); }
+  100% { transform: translateY(0) scale(1); }
+}
+.card.shake { animation: shake 0.4s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-7px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
+}
+
+.dmg {
+  position: absolute; z-index: 20; pointer-events: none;
+  font-size: 30px; font-weight: 900; color: #ffdf5e;
+  text-shadow: 0 2px 0 #7a1d05, 0 0 12px rgba(255, 90, 40, 0.8);
+  animation: floatUp 1s ease-out forwards;
+}
+.dmg.heal { color: #7dff9a; text-shadow: 0 2px 0 #0d5c1e, 0 0 12px rgba(60, 220, 110, 0.8); }
+@keyframes floatUp {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-56px); opacity: 0; }
+}
+
+/* ---------- title + end screens ---------- */
+
+.overlay {
+  position: absolute; inset: 0; z-index: 30;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 30px;
+}
+#title-screen {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(232, 195, 58, 0.22), transparent 55%),
+    radial-gradient(ellipse at 50% 120%, rgba(43, 125, 224, 0.25), transparent 60%),
+    rgba(8, 18, 12, 0.82);
+}
+.game-logo {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 92px; font-weight: 900; letter-spacing: 0.04em; line-height: 0.95;
+  background: linear-gradient(100deg, #ff7a3c 10%, #e8c33a 45%, #6ec1ff 90%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 6px 30px rgba(232, 195, 58, 0.25);
+}
+.game-tag {
+  margin-top: 10px; font-size: 21px; font-weight: 600; color: #d9e8d2;
+  letter-spacing: 0.06em;
+}
+.legend {
+  display: flex; gap: 14px; margin-top: 26px;
+}
+.legend .el-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(0, 0, 0, 0.5); border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px; padding: 7px 14px; font-size: 16px; font-weight: 800;
+}
+.legend .el-chip .el-icon { width: 24px; height: 24px; }
+.legend .beats { font-size: 13px; color: #ffe9a8; margin-top: 12px; }
+.howto {
+  margin-top: 22px; font-size: 16.5px; line-height: 1.55; color: #e8f0e2;
+  background: rgba(0, 0, 0, 0.45); border-radius: 12px; padding: 12px 22px;
+  max-width: 760px;
+}
+.howto b { color: #ffe066; }
+.big-btn {
+  margin-top: 26px; padding: 15px 46px; font-size: 24px;
+  background: linear-gradient(#f2cd4e, #c9a227); color: #241a05;
+  box-shadow: 0 6px 0 #7a5f08, 0 10px 24px rgba(0, 0, 0, 0.6);
+  transition: transform 0.08s ease, filter 0.15s ease;
+  animation: pulseBtn 1.6s ease-in-out infinite;
+}
+.big-btn:hover { filter: brightness(1.08); }
+.big-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #7a5f08; }
+@keyframes pulseBtn {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.045); }
+}
+.foot-note { margin-top: 20px; font-size: 13.5px; color: rgba(255, 255, 255, 0.6); }
+
+#win-screen { background: radial-gradient(ellipse at 50% 40%, rgba(232, 195, 58, 0.5), rgba(20, 14, 2, 0.88) 70%); }
+#loss-screen { background: radial-gradient(ellipse at 50% 40%, rgba(60, 40, 90, 0.55), rgba(6, 6, 12, 0.9) 70%); }
+.end-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 104px; font-weight: 900; letter-spacing: 0.06em; line-height: 1;
+}
+#win-screen .end-title {
+  color: #ffe066; text-shadow: 0 0 34px rgba(232, 195, 58, 0.9), 0 6px 0 #7a5f08;
+  animation: winPop 0.7s ease;
+}
+#loss-screen .end-title {
+  color: #b9b3d6; text-shadow: 0 0 26px rgba(90, 70, 160, 0.8), 0 6px 0 #241a3a;
+}
+@keyframes winPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.end-sub { margin-top: 12px; font-size: 23px; font-weight: 600; color: #f5efe0; }
+.end-stats { margin-top: 16px; font-size: 17px; color: #ffe9a8; line-height: 1.6; }
+.end-stats b { color: #fff; }
+
+/* life flash when damaged */
+.flash-red { animation: flashRed 0.5s ease; }
+@keyframes flashRed {
+  0%, 100% { background-color: transparent; }
+  30% { background-color: rgba(255, 40, 20, 0.4); }
+}
